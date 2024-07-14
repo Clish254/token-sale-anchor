@@ -1,6 +1,8 @@
-# Token Sale Smart Contract
+# Token Sale Program
 
-This repository contains a token sale smart contract implemented using the Anchor framework on Solana. This contract allows a seller to initialize a token sale, whitelist buyers, manage token purchases, and end the sale.
+This repository contains a token sale program implemented using the Anchor framework on Solana.
+This contract allows a seller to initialize a token sale, whitelist buyers, manage token purchases,
+and end the sale.
 
 ## Table of Contents
 
