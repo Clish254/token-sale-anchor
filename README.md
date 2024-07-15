@@ -3,6 +3,8 @@
 This repository contains a token sale program implemented using the Anchor framework on Solana.
 This program allows a seller to initialize a token sale, whitelist buyers, manage token purchases,
 and end the sale.
+This is my submission for the [Rust track](https://earn.superteam.fun/listings/hackathon/whitelist-gated-token-sale-st-talent-olympics/) in
+the [superteam talent olympics hackathon](https://earn.superteam.fun/talent-olympics/)
 
 ## Table of Contents
 
