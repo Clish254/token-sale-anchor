@@ -37,7 +37,7 @@ pub mod token_sale_anchor {
         Ok(())
     }
 
-    pub fn whitelist(ctx: Context<Whitelist>) -> Result<()> {
+    pub fn whitelist_user(ctx: Context<Whitelist>) -> Result<()> {
         let seller = &ctx.accounts.seller;
         let token_sale_account = &ctx.accounts.token_sale_account;
 
@@ -85,17 +85,23 @@ pub mod token_sale_anchor {
             token_sale_account.per_token_price * number_of_tokens,
         )?;
 
-        msg!("Transfer tokens: temp token account -> buyer token account");
-        let context = ctx
-            .accounts
-            .token_program_context(anchor_spl::token::Transfer {
-                from: temp_token_account.to_account_info(),
-                to: buyer_token_account.to_account_info(),
-                authority: token_sale_token_acct_authority.to_account_info(),
-            });
+        msg!(
+            "Transfer {} tokens: temp token account -> buyer token account",
+            number_of_tokens
+        );
         anchor_spl::token::transfer(
-            context,
-            token_sale_account.per_token_price * number_of_tokens,
+            ctx.accounts
+                .token_program_context(anchor_spl::token::Transfer {
+                    from: temp_token_account.to_account_info(),
+                    to: buyer_token_account.to_account_info(),
+                    authority: token_sale_token_acct_authority.to_account_info(),
+                })
+                .with_signer(&[&[
+                    b"authority",
+                    ctx.accounts.token_sale_account.key().as_ref(),
+                    &[ctx.bumps.token_sale_token_acct_authority],
+                ]]),
+            number_of_tokens,
         )?;
         Ok(())
     }
@@ -107,24 +113,35 @@ pub mod token_sale_anchor {
         let token_sale_token_acct_authority = &ctx.accounts.token_sale_token_acct_authority;
 
         msg!("Transfer tokens: temp token account -> seller account");
-        let context = ctx
-            .accounts
-            .token_program_context(anchor_spl::token::Transfer {
-                from: temp_token_account.to_account_info(),
-                to: seller_token_account.to_account_info(),
-                authority: token_sale_token_acct_authority.to_account_info(),
-            });
-        anchor_spl::token::transfer(context, temp_token_account.amount)?;
+        anchor_spl::token::transfer(
+            ctx.accounts
+                .token_program_context(anchor_spl::token::Transfer {
+                    from: temp_token_account.to_account_info(),
+                    to: seller_token_account.to_account_info(),
+                    authority: token_sale_token_acct_authority.to_account_info(),
+                })
+                .with_signer(&[&[
+                    b"authority",
+                    ctx.accounts.token_sale_account.key().as_ref(),
+                    &[ctx.bumps.token_sale_token_acct_authority],
+                ]]),
+            temp_token_account.amount,
+        )?;
 
         msg!("close account temp token account");
-        let context = ctx
-            .accounts
-            .token_program_context(anchor_spl::token::CloseAccount {
-                account: temp_token_account.to_account_info(),
-                destination: seller.to_account_info(),
-                authority: token_sale_token_acct_authority.to_account_info(),
-            });
-        anchor_spl::token::close_account(context)?;
+        anchor_spl::token::close_account(
+            ctx.accounts
+                .token_program_context(anchor_spl::token::CloseAccount {
+                    account: temp_token_account.to_account_info(),
+                    destination: seller.to_account_info(),
+                    authority: token_sale_token_acct_authority.to_account_info(),
+                })
+                .with_signer(&[&[
+                    b"authority",
+                    ctx.accounts.token_sale_account.key().as_ref(),
+                    &[ctx.bumps.token_sale_token_acct_authority],
+                ]]),
+        )?;
         Ok(())
     }
 }

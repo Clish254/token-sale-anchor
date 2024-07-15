@@ -15,4 +15,8 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+# test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+test="yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/buy-token.test.ts"
+test-initialize = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/initialize.test.ts"
+test-whitelist = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/whitelist.test.ts"
+test-buy-token= "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/buy-token.test.ts"
